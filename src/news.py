@@ -1,6 +1,10 @@
+from googlesearch import search
 from newsapi import NewsApiClient
 import os
 import datetime
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
 
 NEWSTOKEN = os.environ.get("NEWSAPITOKEN")
 newsapi = NewsApiClient(api_key=NEWSTOKEN)
@@ -8,15 +12,11 @@ newsapi = NewsApiClient(api_key=NEWSTOKEN)
 today = datetime.date.today()
 fromdate = today - datetime.timedelta(days=7)
 
-
-# # /v2/top-headlines
 # top_headlines = newsapi.get_top_headlines(q='bitcoin',
 #                                           sources='bbc-news,the-verge',
 #                                           category='business',
 #                                           language='en',
 #                                           country='us')
-
-# # /v2/everything
 # all_articles = newsapi.get_everything(q='bitcoin',
 #                                       sources='bbc-news,the-verge',
 #                                       domains='bbc.co.uk,techcrunch.com',
@@ -25,8 +25,6 @@ fromdate = today - datetime.timedelta(days=7)
 #                                       language='en',
 #                                       sort_by='relevancy',
 #                                       page=2)
-
-# # /v2/sources
 # sources = newsapi.get_sources()
 
 
@@ -52,3 +50,27 @@ def get_covid_newsources():
     sources = newsapi.get_sources()
     return sources
 
+
+local_news = []
+
+
+def get_covid_local_news(country):
+
+    global local_news
+    news = []
+
+    query = "covid {}".format(country)
+    for i in search(query,        # The query you want to run
+                    tld='com',  # The top level domain
+                    lang='en',  # The language
+                    num=10,     # Number of results per page
+                    start=0,    # First result to retrieve
+                    stop=10,  # Last result to retrieve
+                    pause=0.0,  # Lapse between HTTP requests
+                    ):
+        news.append(i)
+    if news == local_news:
+        local_news = news[3:]
+    else:
+        local_news = news
+    return local_news

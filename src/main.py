@@ -49,6 +49,17 @@ def cmd_stats(update, context):
                              text=string,
                              parse_mode="Markdown")
 
+
+def cmd_news(update, context):
+    if not context.args:
+        country = "Singapore"
+    else:
+        country = context.args[0]
+    newslist = news.get_covid_local_news(country)
+    for i in range(3):
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=newslist[i])
+
     # ========================================== HANDLERS ================================================ #
 
 
@@ -56,7 +67,9 @@ def add_handlers():
     start_handler = CommandHandler('start', cmd_start)
     news_handler = CommandHandler('headlines', cmd_headlines)
     stats_handler = CommandHandler('stats', cmd_stats)
+    news_handler = CommandHandler('news', cmd_news)
 
+    dispatcher.add_handler(news_handler)
     dispatcher.add_handler(stats_handler)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(news_handler)
