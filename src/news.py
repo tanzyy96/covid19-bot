@@ -1,3 +1,10 @@
+import sys
+from googleapiclient.discovery import build
+from bs4 import BeautifulSoup as soup
+from urllib.request import urlopen as ureqs
+import re
+import urllib.parse
+import urllib.request
 from googlesearch import search
 from newsapi import NewsApiClient
 import os
